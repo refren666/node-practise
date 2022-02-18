@@ -81,9 +81,11 @@ app.get('/users', (req, res) => {
 
   if (Object.keys(req.query).length) {
     let usersArray = [...users];
+
     if (req.query.city) {
       usersArray = usersArray.filter(user => user.city === req.query.city);
     }
+
     if (req.query.age) {
       usersArray = usersArray.filter(user => user.age === +req.query.age);
     }
