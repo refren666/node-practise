@@ -53,33 +53,47 @@ let users = [
 
 app.get('/login', (req, res) => {
   res.render('login');
-})
+});
 
 app.get('/register', (req, res) => {
   res.render('register');
-})
+});
 
 app.get('/users', (req, res) => {
-  let filteredUsers;
+  // let filteredUsers;
+  //
+  // if (Object.keys(req.query).length) {
+  //   if (req.query.age && req.query.city) {
+  //     filteredUsers = users.filter(user => {
+  //       return (req.query.age && user.age === +req.query.age)
+  //           && (req.query.city && user.city === req.query.city);
+  //     });
+  //   } else {
+  //     filteredUsers = users.filter(user => {
+  //       return (req.query.age && user.age === +req.query.age)
+  //           || (req.query.city && user.city === req.query.city);
+  //     });
+  //   }
+  //
+  //   res.render('users', { users: filteredUsers });
+  //   return;
+  // }
 
   if (Object.keys(req.query).length) {
-    if (req.query.age && req.query.city) {
-      filteredUsers = users.filter(user => {
-        return (req.query.age && user.age === +req.query.age)
-            && (req.query.city && user.city === req.query.city);
-      })
-    } else {
-      filteredUsers = users.filter(user => {
-        return (req.query.age && user.age === +req.query.age)
-            || (req.query.city && user.city === req.query.city);
-      })
+    let usersArray = [...users];
+    if (req.query.city) {
+      usersArray = usersArray.filter(user => user.city === req.query.city);
+    }
+    if (req.query.age) {
+      usersArray = usersArray.filter(user => user.age === +req.query.age);
     }
 
-    res.render('users', { users: filteredUsers });
+    res.render('users', { users: usersArray });
     return;
   }
+
   res.render('users', { users });
-})
+});
 
 app.get('/users/:userId', (req, res) => {
   const { userId } = req.params;
@@ -93,22 +107,22 @@ app.get('/users/:userId', (req, res) => {
   }
 
   res.render('user', { user });
-})
+});
 
 app.post('/login', (req, res) => {
   const userId = users.findIndex(user => user.email === req.body.email && user.password === req.body.password);
+
   if (userId === -1) {
     error = 'Oof! Email or password was incorrect, try again.';
 
     res.redirect('/notFound');
     return;
   }
+
   res.redirect(`/users/${userId + 1}`);
-})
+});
 
 app.post('/register', (req, res) => {
-  users.push(req.body);
-
   if (users.find(user => user.email === req.body.email)) {
     error = 'User with such email already exist 😥';
 
@@ -116,20 +130,22 @@ app.post('/register', (req, res) => {
     return;
   }
 
+  users.push(req.body);
+
   res.redirect('/users');
-})
+});
 
 app.post('/users/:userId', (req, res) => {
   const { userId } = req.params;
   users = users.filter(user => user.email !== userId);
 
   res.redirect('/users');
-})
+});
 
 app.use((req, res) => {
   res.render('notFound', { error });
-})
+});
 
 app.listen(8080, () => {
   console.log('Connected to port 8080, WOOHOO!');
-})
+});
