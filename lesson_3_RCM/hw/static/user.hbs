@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+<div style="background: lightblue; max-width: 400px; padding: 10px">
+  <div>First Name: {{user.firstName}}</div>
+  <div>Last Name: {{user.lastName}}</div>
+  <div>Password: {{user.password}}</div>
+  <div>Age: {{user.age}}</div>
+  <div>Email: {{user.email}}</div>
+  <div style="margin-bottom: 25px">City: {{user.city}}</div>
+  <form action='/users/{{user.email}}' method="post">
+    <button name={{user.email}}>Delete</button>
+  </form>
+</div>
+
+</body>
+</html>
