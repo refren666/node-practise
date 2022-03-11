@@ -1,27 +1,14 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import 'reflect-metadata';
-import { createConnection, getManager } from 'typeorm';
-import { User } from './entity/user';
+import {createConnection} from 'typeorm';
 
+const apiRoutes = require('./routes/apiRoutes');
 const app = express();
+
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/users', async (req:Request, res:Response) => {
-  try {
-    const users = await getManager().getRepository(User).find();
-    console.log(users);
-    res.json(users);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-// app.post('/users', async (req:Request, res:Response) => {
-//   console.log(req.body);
-//   const createdUser = await getManager().getRepository(User).save(req.body);
-//   res.json(createdUser);
-// });
+app.use(apiRoutes);
 
 app.listen(7000, async () => {
   console.log('Server started!');

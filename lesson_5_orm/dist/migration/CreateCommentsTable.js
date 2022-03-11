@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePostsTable1645474391387 = void 0;
+exports.CreateCommentsTable1646940097603 = void 0;
 const typeorm_1 = require("typeorm");
-class CreatePostsTable1645474391387 {
+class CreateCommentsTable1646940097603 {
     async up(queryRunner) {
         await queryRunner.createTable(new typeorm_1.Table({
-            name: 'Posts',
+            name: 'Comments',
             columns: [
                 {
                     name: 'id',
@@ -15,21 +15,30 @@ class CreatePostsTable1645474391387 {
                     generationStrategy: 'increment',
                 },
                 {
-                    name: 'title',
-                    type: 'varchar',
-                    width: 250,
-                    isUnique: true,
-                    isNullable: false,
-                },
-                {
                     name: 'text',
                     type: 'varchar',
-                    width: 250,
+                    width: 255,
                     isNullable: false,
                 },
                 {
-                    name: 'userId',
+                    name: 'authorId',
                     type: 'int',
+                },
+                {
+                    name: 'postId',
+                    type: 'int',
+                },
+                {
+                    name: 'like',
+                    type: 'int',
+                    isNullable: false,
+                    default: 0
+                },
+                {
+                    name: 'dislike',
+                    type: 'int',
+                    isNullable: false,
+                    default: 0
                 },
                 {
                     name: 'createdAt',
@@ -45,18 +54,25 @@ class CreatePostsTable1645474391387 {
             ],
             foreignKeys: [
                 {
-                    columnNames: ['userId'],
+                    columnNames: ['postId'],
+                    referencedTableName: 'Posts',
+                    referencedColumnNames: ['id'],
+                    onDelete: 'CASCADE',
+                    onUpdate: 'CASCADE',
+                },
+                {
+                    columnNames: ['authorId'],
                     referencedTableName: 'Users',
                     referencedColumnNames: ['id'],
                     onDelete: 'CASCADE',
                     onUpdate: 'CASCADE',
                 },
-            ],
+            ]
         }), true);
     }
     async down(queryRunner) {
-        await queryRunner.dropTable('Posts', true);
+        await queryRunner.dropTable('Comments', true);
     }
 }
-exports.CreatePostsTable1645474391387 = CreatePostsTable1645474391387;
-//# sourceMappingURL=CreatePostsTable.js.map
+exports.CreateCommentsTable1646940097603 = CreateCommentsTable1646940097603;
+//# sourceMappingURL=CreateCommentsTable.js.map

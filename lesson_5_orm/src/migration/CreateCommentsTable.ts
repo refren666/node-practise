@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {MigrationInterface, QueryRunner, Table} from "typeorm";
 
-export class CreatePostsTable1645474391387 implements MigrationInterface {
+export class CreateCommentsTable1646940097603 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(new Table({
-      name: 'Posts',
+      name: 'Comments',
       columns: [
         {
           name: 'id',
@@ -14,21 +14,30 @@ export class CreatePostsTable1645474391387 implements MigrationInterface {
           generationStrategy: 'increment',
         },
         {
-          name: 'title',
-          type: 'varchar',
-          width: 250,
-          isUnique: true,
-          isNullable: false,
-        },
-        {
           name: 'text',
           type: 'varchar',
-          width: 250,
+          width: 255,
           isNullable: false,
         },
         {
-          name: 'userId',
+          name: 'authorId',
           type: 'int',
+        },
+        {
+          name: 'postId',
+          type: 'int',
+        },
+        {
+          name: 'like',
+          type: 'int',
+          isNullable: false,
+          default: 0
+        },
+        {
+          name: 'dislike',
+          type: 'int',
+          isNullable: false,
+          default: 0
         },
         {
           name: 'createdAt',
@@ -36,6 +45,7 @@ export class CreatePostsTable1645474391387 implements MigrationInterface {
           isNullable: false,
           default: 'now()',
         },
+
         {
           name: 'deletedAt',
           type: 'timestamp',
@@ -45,17 +55,25 @@ export class CreatePostsTable1645474391387 implements MigrationInterface {
 
       foreignKeys: [
         {
-          columnNames: ['userId'],
+          columnNames: ['postId'],
+          referencedTableName: 'Posts',
+          referencedColumnNames: ['id'],
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE',
+        },
+        {
+          columnNames: ['authorId'],
           referencedTableName: 'Users',
           referencedColumnNames: ['id'],
           onDelete: 'CASCADE',
           onUpdate: 'CASCADE',
         },
-      ],
-    }), true);
+      ]
+    }), true)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Posts', true);
+    await queryRunner.dropTable('Comments', true)
   }
+
 }
