@@ -1,10 +1,11 @@
+import { IRequestExtended } from './../interfaces/requestExtended.interface';
 import { userService } from './../services/userService';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 
 import { tokenService } from './../services';
 
 class AuthMiddleware {
-  public async checkAccessToken(req: Request, res: Response, next: NextFunction) {
+  public async checkAccessToken(req: IRequestExtended, res: Response, next: NextFunction) {
     try {
       const authToken = req.get('Authorization');
 
@@ -12,7 +13,7 @@ class AuthMiddleware {
         throw new Error('No token');
       }  
 
-      const { userId, userEmail } = tokenService.verifyToken(authToken);
+      const { userEmail } = tokenService.verifyToken(authToken);
 
 //   tokenService.verifyToken(authToken) = {
 //    userId: 7,
@@ -23,6 +24,12 @@ class AuthMiddleware {
       
       const userFromToken = await userService.getUserByEmail(userEmail);
 
+      if (!userFromToken) {
+        throw new Error('Wrong token');
+      }
+
+      req.user = userFromToken; // extended request (object)
+      
       next();
     } catch (error: any) {
       res.json({

@@ -45,7 +45,7 @@ class TokenService {
         return jsonwebtoken_1.default.verify(authToken, secretWord);
     }
     async deleteUserTokenPair(userId) {
-        return tokenRepository_1.tokenRepository.deleteTokenByUserId(userId);
+        return tokenRepository_1.tokenRepository.deleteByParams({ userId });
     }
 }
 exports.tokenService = new TokenService();

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authController = void 0;
+const cookie_1 = require("./../constants/cookie");
 const services_1 = require("../services/");
 class AuthController {
     async registration(req, res) {
@@ -15,9 +16,9 @@ class AuthController {
         }
     }
     async logout(req, res) {
-        console.log(req.get('Authorization'));
-        res.clearCookie('refreshToken');
-        await services_1.tokenService.deleteUserTokenPair(4);
+        const { id } = req.user; // user may noy be found
+        res.clearCookie(cookie_1.COOKIE.nameRefreshToken);
+        await services_1.tokenService.deleteUserTokenPair(id);
         return res.json('Ok');
     }
 }

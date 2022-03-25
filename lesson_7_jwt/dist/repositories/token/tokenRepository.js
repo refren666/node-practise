@@ -10,8 +10,8 @@ class TokenRepository {
     async findTokenByUserId(userId) {
         return (0, typeorm_1.getManager)().getRepository(token_1.Token).findOne({ userId });
     }
-    async deleteTokenByUserId(userId) {
-        return (0, typeorm_1.getManager)().getRepository(token_1.Token).delete(userId);
+    async deleteByParams(findObject) {
+        return (0, typeorm_1.getManager)().getRepository(token_1.Token).delete(findObject);
     }
 }
 exports.tokenRepository = new TokenRepository();

@@ -10,7 +10,7 @@ class AuthMiddleware {
             if (!authToken) {
                 throw new Error('No token');
             }
-            const { userId, userEmail } = services_1.tokenService.verifyToken(authToken);
+            const { userEmail } = services_1.tokenService.verifyToken(authToken);
             //   tokenService.verifyToken(authToken) = {
             //    userId: 7,
             //    userEmail: 'Marlboro3@mail.com',
@@ -18,6 +18,10 @@ class AuthMiddleware {
             //    exp: 1648298821
             //   }
             const userFromToken = await userService_1.userService.getUserByEmail(userEmail);
+            if (!userFromToken) {
+                throw new Error('Wrong token');
+            }
+            req.user = userFromToken; // extended request (object)
             next();
         }
         catch (error) {

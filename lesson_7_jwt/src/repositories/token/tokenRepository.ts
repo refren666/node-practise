@@ -7,11 +7,11 @@ class TokenRepository {
   }
 
   public async findTokenByUserId(userId: number): Promise<IToken | undefined> {
-    return getManager().getRepository(Token).findOne({ userId })
+    return getManager().getRepository(Token).findOne({ userId });
   }
 
-  public async deleteTokenByUserId(userId: number ): Promise<DeleteResult> {
-    return getManager().getRepository(Token).delete(userId);
+  public async deleteByParams(findObject: Partial<IToken>): Promise<DeleteResult> {
+    return getManager().getRepository(Token).delete(findObject);
   }
 }
 
