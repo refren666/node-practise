@@ -10,8 +10,8 @@ const tokenRepository_1 = require("../repositories/token/tokenRepository");
 class TokenService {
     async generateTokenPair(payload) {
         try {
-            const accessToken = jsonwebtoken_1.default.sign(payload, config_1.config.SECRET_ACCESS_KEY, { expiresIn: '15m' }); // first - what to hash, second - key word
-            const refreshToken = jsonwebtoken_1.default.sign(payload, config_1.config.SECRET_REFRESH_KEY, { expiresIn: '1d' });
+            const accessToken = jsonwebtoken_1.default.sign(payload, config_1.config.SECRET_ACCESS_KEY, { expiresIn: config_1.config.EXPIRES_IN_ACCESS }); // first - what to hash, second - key word
+            const refreshToken = jsonwebtoken_1.default.sign(payload, config_1.config.SECRET_REFRESH_KEY, { expiresIn: config_1.config.EXPIRES_IN_REFRESH });
             return {
                 accessToken,
                 refreshToken
@@ -35,6 +35,14 @@ class TokenService {
             console.log(e);
             throw new Error(e);
         }
+    }
+    // used for both refresh and access tokens (to verify and de-hash them)
+    verifyToken(authToken, tokenType = 'access') {
+        let secretWord = config_1.config.SECRET_ACCESS_KEY;
+        if (tokenType === 'refresh') {
+            secretWord = config_1.config.SECRET_REFRESH_KEY;
+        }
+        return jsonwebtoken_1.default.verify(authToken, secretWord);
     }
     async deleteUserTokenPair(userId) {
         return tokenRepository_1.tokenRepository.deleteTokenByUserId(userId);

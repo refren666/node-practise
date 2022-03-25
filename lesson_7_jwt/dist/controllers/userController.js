@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const user_1 = require("../entity/user");
-const userService_1 = require("../services/userService");
+const services_1 = require("../services");
 class UserController {
     async getUsersWithSpecificText(req, res) {
         try {
@@ -24,12 +24,12 @@ class UserController {
         }
     }
     async createUser(req, res) {
-        const createdUser = await userService_1.userService.createUser(req.body);
+        const createdUser = await services_1.userService.createUser(req.body);
         return res.json(createdUser);
     }
     async getUserByEmail(req, res) {
         const { email } = req.params;
-        const user = await userService_1.userService.getUserByEmail(email);
+        const user = await services_1.userService.getUserByEmail(email);
         return res.json(user);
     }
     async updateUserEmailAndPasswordById(req, res) {

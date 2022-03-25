@@ -2,7 +2,7 @@ import {getManager} from "typeorm";
 import {Request, Response} from "express";
 
 import {IUser, User} from "../entity/user";
-import {userService} from "../services/userService";
+import {userService} from "../services";
 
 class UserController {
   public async getUsersWithSpecificText (req:Request, res:Response) {

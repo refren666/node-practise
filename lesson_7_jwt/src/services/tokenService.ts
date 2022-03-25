@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 
 import {config} from "../config/config";
 import {IToken} from "../entity/token";
@@ -10,13 +10,13 @@ class TokenService {
       const accessToken = jwt.sign(
         payload,
         config.SECRET_ACCESS_KEY as string,
-        {expiresIn: '15m'}
+        {expiresIn: config.EXPIRES_IN_ACCESS}
       ); // first - what to hash, second - key word
 
       const refreshToken = jwt.sign(
         payload,
         config.SECRET_REFRESH_KEY as string,
-        {expiresIn: '1d'}
+        {expiresIn: config.EXPIRES_IN_REFRESH}
       );
 
       return {
@@ -46,7 +46,18 @@ class TokenService {
     }
   }
 
-  async deleteUserTokenPair(userId: number) {
+  // used for both refresh and access tokens (to verify and de-hash them)
+  public verifyToken(authToken: string, tokenType = 'access'): string | JwtPayload {
+    let secretWord = config.SECRET_ACCESS_KEY;
+
+    if (tokenType === 'refresh') {
+      secretWord = config.SECRET_REFRESH_KEY;
+    }
+
+    return jwt.verify(authToken, secretWord as string);
+  }
+
+  public async deleteUserTokenPair(userId: number) {
     return tokenRepository.deleteTokenByUserId(userId)
   }
 }

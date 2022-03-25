@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
 
-import {authService} from "../services/authService";
-import {tokenService} from "../services/tokenService";
+import {authService, tokenService} from "../services/";
 
 class AuthController {
   public async registration(req: Request, res: Response) {
@@ -22,7 +21,7 @@ class AuthController {
   public async logout(req: Request, res: Response): Promise<Response<string>> {
     console.log(req.get('Authorization'));
     res.clearCookie('refreshToken');
-    await tokenService.deleteUserTokenPair(14);
+    await tokenService.deleteUserTokenPair(4);
 
     return res.json('Ok');
   }
