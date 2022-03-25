@@ -1,9 +1,10 @@
+import { ITokenData } from './../interfaces/token.interface';
 import {userService} from "./userService";
 import {tokenService} from "./tokenService";
 import {IUser} from "../entity/user";
 
 class AuthService {
-  public async registration(body: IUser) {
+  public async registration(body: IUser): Promise<ITokenData> {
     try {
       const { email } = body; // extracting email to check whether user already exists
 
@@ -22,7 +23,7 @@ class AuthService {
     }
   }
 
-  private async _getTokenData(userData: IUser) {
+  private async _getTokenData(userData: IUser): Promise<ITokenData> {
     try {
       const { id, email } = userData;
       const tokenPair = await tokenService.generateTokenPair({ userId: id, userEmail: email });
@@ -36,8 +37,9 @@ class AuthService {
         userId: id,
         userEmail: email
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
+      throw new Error(e);
     }
   }
 }

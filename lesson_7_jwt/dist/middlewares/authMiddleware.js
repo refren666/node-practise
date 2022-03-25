@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = void 0;
+const userService_1 = require("./../services/userService");
 const services_1 = require("./../services");
 class AuthMiddleware {
     async checkAccessToken(req, res, next) {
@@ -9,11 +10,14 @@ class AuthMiddleware {
             if (!authToken) {
                 throw new Error('No token');
             }
-            const extractedToken = authToken.split(' ')[1];
-            const resp = services_1.tokenService.verifyToken(extractedToken);
-            console.log('-------------------------');
-            console.log(resp);
-            console.log('-------------------------');
+            const { userId, userEmail } = services_1.tokenService.verifyToken(authToken);
+            //   tokenService.verifyToken(authToken) = {
+            //    userId: 7,
+            //    userEmail: 'Marlboro3@mail.com',
+            //    iat: 1648212421,
+            //    exp: 1648298821
+            //   }
+            const userFromToken = await userService_1.userService.getUserByEmail(userEmail);
             next();
         }
         catch (error) {

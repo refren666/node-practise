@@ -1,3 +1,4 @@
+import { userService } from './../services/userService';
 import { NextFunction, Request, Response } from 'express';
 
 import { tokenService } from './../services';
@@ -10,14 +11,17 @@ class AuthMiddleware {
       if (!authToken) {
         throw new Error('No token');
       }  
+
+      const { userId, userEmail } = tokenService.verifyToken(authToken);
+
+//   tokenService.verifyToken(authToken) = {
+//    userId: 7,
+//    userEmail: 'Marlboro3@mail.com',
+//    iat: 1648212421,
+//    exp: 1648298821
+//   }
       
-      const extractedToken = authToken.split(' ')[1];
-
-      const resp = tokenService.verifyToken(extractedToken);
-
-      console.log('-------------------------');
-      console.log(resp);
-      console.log('-------------------------');
+      const userFromToken = await userService.getUserByEmail(userEmail);
 
       next();
     } catch (error: any) {
