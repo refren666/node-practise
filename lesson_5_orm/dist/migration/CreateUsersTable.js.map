@@ -1,1 +1,0 @@
-{"version":3,"file":"CreateUsersTable.js","sourceRoot":"","sources":["../../src/migration/CreateUsersTable.ts"],"names":[],"mappings":";;;AAEA,MAAa,6BAA6B;IACjC,KAAK,CAAC,EAAE,CAAC,WAAwB;QACtC,MAAM,WAAW,CAAC,KAAK,CAAC;;;;;;;;;;;;SAYnB,CAAC,CAAC;IACT,CAAC;IAEM,KAAK,CAAC,IAAI,CAAC,WAAwB;QACxC,MAAM,WAAW,CAAC,KAAK,CAAC;;SAEnB,CAAC,CAAC;IACT,CAAC;CACF;AAtBD,sEAsBC"}
