@@ -1,17 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 
-import { COOKIE } from './../constants';
-import { IUser } from './../entity/user';
-import { IRequestExtended } from './../interfaces';
-import { authService, tokenService, userService } from "../services/";
-import { tokenRepository } from './../repositories/token/tokenRepository';
+import { COOKIE, emailActionEnum } from "./../constants";
+import { IUser } from "./../entity/user";
+import { IRequestExtended } from "./../interfaces";
+import {
+  authService,
+  emailService,
+  tokenService,
+  userService,
+} from "../services/";
+import { tokenRepository } from "./../repositories/token/tokenRepository";
 
 class AuthController {
   public async registration(req: Request, res: Response, next: NextFunction) {
     try {
       const data = await authService.registration(req.body);
       res.cookie(
-        'refreshToken',
+        "refreshToken",
         data?.refreshToken,
         { maxAge: COOKIE.maxAgeRefreshToken, httpOnly: true } // httpOnly for security (will not allow malicious JS code)
       );
@@ -22,12 +27,15 @@ class AuthController {
     }
   }
 
-  public async logout(req: IRequestExtended, res: Response): Promise<Response<string>> {
+  public async logout(
+    req: IRequestExtended,
+    res: Response
+  ): Promise<Response<string>> {
     const { id } = req.user as IUser; // user may noy be found
 
     await tokenService.deleteUserTokenPair(id);
 
-    return res.json('Ok');
+    return res.json("Ok");
   }
 
   public async login(req: IRequestExtended, res: Response, next: NextFunction) {
@@ -35,16 +43,21 @@ class AuthController {
       const { id, email, password: hashPassword } = req.user as IUser; // from middleware
       const { password } = req.body; // extract password from input to check if it matches
 
+      await emailService.sendMail(email, emailActionEnum.WELCOME); // sends email to logged in user
+
       await userService.compareUserPasswords(password, hashPassword);
 
-      const { refreshToken, accessToken } = tokenService.generateTokenPair({ userId: id, userEmail: email });
+      const { refreshToken, accessToken } = tokenService.generateTokenPair({
+        userId: id,
+        userEmail: email,
+      });
 
       // save in DB
       await tokenRepository.createToken({
         refreshToken,
         accessToken,
-        userId: id
-      })
+        userId: id,
+      });
 
       // returned to frontend as response
       res.json({
@@ -58,24 +71,36 @@ class AuthController {
     }
   }
 
-  public async refresh(req: IRequestExtended, res: Response, next: NextFunction) {
+  public async refresh(
+    req: IRequestExtended,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const { id, email } = req.user as IUser; // from middleware
-      const refreshTokenToDelete = req.get('Authorization');
+      const refreshTokenToDelete = req.get("Authorization");
 
-      await tokenService.deleteTokenPairByParams({ refreshToken: refreshTokenToDelete }); // deleted old token pair with this token
+      await tokenService.deleteTokenPairByParams({
+        refreshToken: refreshTokenToDelete,
+      }); // deleted old token pair with this token
 
-      const { refreshToken, accessToken } = tokenService.generateTokenPair({ userId: id, userEmail: email }); // generated new token pair
+      const { refreshToken, accessToken } = tokenService.generateTokenPair({
+        userId: id,
+        userEmail: email,
+      }); // generated new token pair
 
-      await tokenRepository.createToken({ refreshToken, accessToken, userId: id }); // saved in DB
+      await tokenRepository.createToken({
+        refreshToken,
+        accessToken,
+        userId: id,
+      }); // saved in DB
 
       // returned to frontend as response
       res.json({
         refreshToken,
         accessToken,
         user: req.user,
-      })
-
+      });
     } catch (e) {
       // res.status(400).json(e);
       next(e);

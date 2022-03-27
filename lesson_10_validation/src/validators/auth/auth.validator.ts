@@ -1,18 +1,19 @@
-import { Joi, Segments } from 'celebrate';
+import Joi from "joi";
 
-import { commonValidator } from '../common/common.validator';
-
-// const carSubValidator = Joi.object({
-//   model: Joi.string()
-// })
+import { commonValidator } from "../common/common.validator";
 
 export const authValidator = {
-  login: { // Segments -> what to validate
-    [Segments.BODY]: Joi.object({
-      email: commonValidator.emailValidator,
-      password: Joi.string().min(8).required(),
-      // cars: Joi.array().items(carSubValidator).min(2).max(90)
-    })
-  }
-}
+  login: Joi.object({
+    email: commonValidator.emailValidator,
+    password: commonValidator.passwordValidator,
+  }),
 
+  registration: Joi.object({
+    firstName: commonValidator.firstAndLastNameValidator,
+    lastName: commonValidator.firstAndLastNameValidator,
+    age: commonValidator.ageValidator,
+    phone: commonValidator.phoneValidator,
+    email: commonValidator.emailValidator,
+    password: commonValidator.passwordValidator,
+  }),
+};
