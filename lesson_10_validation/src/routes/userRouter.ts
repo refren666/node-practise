@@ -1,16 +1,16 @@
-import {Router} from "express";
+import { Router } from "express";
 
-const userController = require('../controllers/userController');
+const userController = require("../controllers/userController");
 
 const userRouter = Router();
 
-userRouter.get('/', userController.getUsersWithSpecificText);
+userRouter.get("/", userController.getUsersWithSpecificText);
 
-userRouter.get('/:email', userController.getUserByEmail);
+userRouter.get("/:email", userController.getUserByEmail);
 
-userRouter.post('/', userController.createUser);
+userRouter.post("/", userController.createUser);
 
-userRouter.patch('/:userId', userController.updateUserEmailAndPasswordById);
+userRouter.patch("/:userId", userController.updateUserEmailAndPasswordById);
 
 // userRouter.delete('/:userId', async (req:Request, res:Response) => {
 //   const { userId } = req.params;
@@ -19,6 +19,6 @@ userRouter.patch('/:userId', userController.updateUserEmailAndPasswordById);
 //   res.json(deletedUser);
 // })
 
-userRouter.delete('/:userId', userController.deleteUserById);
+userRouter.delete("/:userId", userController.deleteUserById);
 
 module.exports = userRouter;
