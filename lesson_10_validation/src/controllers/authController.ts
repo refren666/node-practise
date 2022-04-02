@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { COOKIE, emailActionEnum } from "./../constants";
+import { COOKIE, EmailActionEnum } from "./../constants";
 import { IUser } from "./../entity/user";
 import { IRequestExtended } from "./../interfaces";
 import {
@@ -15,6 +15,7 @@ class AuthController {
   public async registration(req: Request, res: Response, next: NextFunction) {
     try {
       const data = await authService.registration(req.body);
+
       res.cookie(
         "refreshToken",
         data?.refreshToken,
@@ -43,7 +44,9 @@ class AuthController {
       const { id, email, password: hashPassword } = req.user as IUser; // from middleware
       const { password } = req.body; // extract password from input to check if it matches
 
-      await emailService.sendMail(email, emailActionEnum.WELCOME); // sends email to logged in user
+      await emailService.sendMail(email, EmailActionEnum.WELCOME, {
+        userName: "Denys",
+      }); // sends welcome email to logged in user, 3rd param should be dynamic (goes to pug file)
 
       await userService.compareUserPasswords(password, hashPassword);
 

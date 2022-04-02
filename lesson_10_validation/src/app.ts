@@ -1,9 +1,15 @@
-import 'reflect-metadata';
-import express from 'express';
-import { createConnection } from 'typeorm';
+import "reflect-metadata";
+import express from "express";
+import { createConnection } from "typeorm";
 
-const apiRoutes = require('./routes/apiRoutes');
+// declare global {
+//   var rootDir: string;
+// }
+
+const apiRoutes = require("./routes/apiRoutes");
 const app = express();
+
+// global.rootDir = __dirname; // lesson_10_validator/src
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,7 +24,7 @@ app.listen(PORT, async () => {
   try {
     const connection = await createConnection();
     if (connection) {
-      console.log('Database connected');
+      console.log("Database connected");
     }
   } catch (e) {
     console.log(e);

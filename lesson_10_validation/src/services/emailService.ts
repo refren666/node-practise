@@ -1,11 +1,27 @@
-import nodemailer from "nodemailer";
+import nodemailer, { SentMessageInfo } from "nodemailer";
+import EmailTemplate from "email-templates";
+import path from "path";
 
-import { emailActionEnum, emailInfo } from "./../constants";
+import { EmailActionEnum, emailInfo } from "./../constants";
 import { config } from "../config/config";
 
 class EmailService {
-  public sendMail(userEmail: string, action: emailActionEnum) {
-    const { subject, html } = emailInfo[action]; // action = WELCOME or ACCOUNT_BLOCKED
+  templateRenderer = new EmailTemplate({
+    views: {
+      root: path.join(__dirname, "../", "email-templates"), // process.cwd() points towards package.json file (from where program runs)
+    },
+  });
+
+  public async sendMail(
+    userEmail: string,
+    action: EmailActionEnum,
+    context = {}
+  ): Promise<SentMessageInfo> {
+    const { subject, templateName } = emailInfo[action]; // action = WELCOME or ACCOUNT_BLOCKED
+
+    Object.assign(context, { frontendUrl: "https://google.com" }); // context already has userName(in controller)
+
+    const html = await this.templateRenderer.render(templateName, context); // renders pug file; 2nd param is called "locals", the purpose is to transfer dynamic data to pug file!
 
     const emailTransporter = nodemailer.createTransport({
       from: "No Reply",
